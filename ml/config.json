@@ -1,0 +1,9 @@
+﻿{
+  "img_size": 512,     
+  "channels": 3,
+  "base_channels": 32,
+  "depth": 3,
+  "num_classes": 1,
+  "mask_threshold": 0.5
+}
+

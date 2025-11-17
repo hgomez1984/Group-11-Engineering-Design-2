@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dental AI • Staff Portal</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f3f7fb;
+      color: #1f2933;
+    }
+    .top-bar {
+      background: #0b7bbf;
+      color: white;
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .top-bar-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .top-bar-title span.logo {
+      display: inline-flex;
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: white;
+      color: #0b7bbf;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+    #logout-btn {
+      border: none;
+      background: #e02424;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      display: none;
+    }
+
+    .page {
+      max-width: 1200px;
+      margin: 24px auto 40px;
+      padding: 0 16px;
+    }
+
+    /* Login + Register side by side */
+    #auth-wrapper {
+      max-width: 1000px;
+      margin: 60px auto 40px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+      gap: 24px;
+      align-items: flex-start;
+    }
+
+    #staff-login,
+    #staff-register {
+      background: white;
+      border-radius: 16px;
+      padding: 24px 24px 32px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+      border: 1px solid #e1e7f0;
+      max-width: none;
+      margin: 0;
+    }
+
+    #staff-login h1 {
+      font-size: 1.5rem;
+      margin-bottom: 4px;
+    }
+    #staff-login .subtitle {
+      font-size: 0.9rem;
+      color: #6b7280;
+      margin-bottom: 16px;
+    }
+
+    #staff-register h2 {
+      font-size: 1.25rem;
+      margin-top: 0;
+      margin-bottom: 4px;
+    }
+    #staff-register .subtitle {
+      font-size: 0.9rem;
+      color: #6b7280;
+      margin-bottom: 16px;
+    }
+
+    form label {
+      display: block;
+      margin-bottom: 12px;
+      font-size: 0.9rem;
+      color: #374151;
+    }
+    form input {
+      width: 100%;
+      margin-top: 4px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      font-size: 0.95rem;
+      box-sizing: border-box;
+    }
+    form button {
+      margin-top: 12px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: none;
+      background: #0b7bbf;
+      color: white;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .error {
+      color: #b91c1c;
+      margin-top: 8px;
+      font-size: 0.85rem;
+      min-height: 20px;
+    }
+    .staff-create-message {
+      margin-top: 8px;
+      font-size: 0.85rem;
+      min-height: 20px;
+    }
+
+    /* ==== DASHBOARD AREA ==== */
+    #staff-dashboard {
+      display: none;
+      margin-top: 16px;
+    }
+
+    .staff-shell {
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+    }
+
+    /* left vertical icons */
+    .staff-nav {
+      width: 64px;
+      background: #f1f5f9;
+      border-radius: 16px;
+      padding: 10px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .nav-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      border: none;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.1rem;
+      box-shadow: 0 1px 3px rgba(15,23,42,0.08);
+    }
+    .nav-icon.active {
+      background: #0b7bbf;
+      color: white;
+    }
+
+    .staff-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .dashboard-main-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.6fr);
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    /* PATIENT LIST CARD */
+    .patients-panel {
+      background: white;
+      border-radius: 16px;
+      padding: 14px 16px 16px;
+      box-shadow: 0 2px 6px rgba(15,23,42,0.06);
+      border: 1px solid #e5e7eb;
+    }
+    .patients-panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .patients-panel-header h2 {
+      font-size: 1rem;
+      margin: 0;
+    }
+    .patients-count {
+      font-size: 0.8rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #e0f2fe;
+      color: #0369a1;
+    }
+    #patient-search {
+      width: 100%;
+      margin-bottom: 8px;
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      border-radius: 999px;
+      border: 1px solid #d1d5db;
+    }
+    #patient-list {
+      max-height: 360px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .patient-row {
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 0.85rem;
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+    .patient-row.active {
+      border-color: #0b7bbf;
+      box-shadow: 0 0 0 1px #0b7bbf;
+      background: #eff6ff;
+    }
+    .patient-row-main {
+      display: flex;
+      flex-direction: column;
+    }
+    .patient-row-main span {
+      font-size: 0.78rem;
+      color: #6b7280;
+    }
+    .patient-badge {
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid #bbf7d0;
+      background: #ecfdf5;
+      color: #15803d;
+    }
+
+    /* patient detail */
+    .patient-detail-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .member-header {
+      background: white;
+      border-radius: 16px;
+      padding: 14px 18px;
+      box-shadow: 0 2px 6px rgba(15,23,42,0.06);
+      border: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .member-primary h1 {
+      font-size: 1rem;
+      margin: 0 0 4px;
+      letter-spacing: 0.03em;
+    }
+    .member-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: #4b5563;
+    }
+    .member-row span::after {
+      content: "•";
+      margin: 0 4px;
+      color: #9ca3af;
+    }
+    .member-row span:last-child::after {
+      content: "";
+    }
+    .member-phone {
+      font-weight: 600;
+    }
+
+    .member-status {
+      font-size: 0.8rem;
+      text-align: right;
+      min-width: 120px;
+    }
+    .status-label {
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #9ca3af;
+      font-size: 0.7rem;
+    }
+    .status-value {
+      font-weight: 600;
+      color: #059669;
+    }
+
+    .member-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 6px;
+      font-size: 0.8rem;
+    }
+    .icon-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border-radius: 999px;
+      border: 1px solid #d1d5db;
+      background: white;
+      padding: 4px 8px;
+      cursor: pointer;
+      font-size: 0.78rem;
+    }
+
+    .program-strip {
+      background: #0b7bbf;
+      color: white;
+      border-radius: 10px;
+      padding: 8px 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-size: 0.8rem;
+    }
+    .program-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .program-label {
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.68rem;
+      opacity: 0.9;
+    }
+    .program-value {
+      font-weight: 600;
+    }
+
+    .conditions-panel,
+    .uploads-panel {
+      background: white;
+      border-radius: 16px;
+      padding: 12px 16px 16px;
+      box-shadow: 0 2px 6px rgba(15,23,42,0.06);
+      border: 1px solid #e5e7eb;
+    }
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .panel-header h2 {
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    .conditions-toolbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .conditions-toolbar input[type="text"],
+    .conditions-toolbar input[type="date"] {
+      border-radius: 999px;
+      border: 1px solid #d1d5db;
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      max-width: 260px;
+    }
+
+    .conditions-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .condition-card {
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      padding: 10px 14px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr) minmax(0, 1.1fr);
+      gap: 8px 16px;
+      font-size: 0.8rem;
+      background: #f9fafb;
+    }
+
+    .cond-main {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .cond-name {
+      font-weight: 600;
+    }
+    .cond-type-pill {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid #93c5fd;
+      background: #eff6ff;
+      color: #1d4ed8;
+      letter-spacing: 0.06em;
+    }
+    .cond-edit {
+      border-radius: 999px;
+      border: 1px solid #d1d5db;
+      background: white;
+      padding: 3px 8px;
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+
+    .field-label {
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.65rem;
+      color: #9ca3af;
+    }
+    .field-value {
+      font-size: 0.78rem;
+    }
+
+    .cond-empty,
+    .uploads-empty {
+      font-size: 0.85rem;
+      color: #6b7280;
+      font-style: italic;
+    }
+
+    #upload-form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 0.8rem;
+    }
+    #upload-file {
+      flex: 1;
+    }
+    #upload-file::file-selector-button {
+      border: none;
+      background: #0b7bbf;
+      color: white;
+      padding: 6px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      margin-right: 8px;
+      font-size: 0.8rem;
+    }
+    #upload-submit {
+      border-radius: 999px;
+      border: none;
+      background: #16a34a;
+      color: white;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+    #upload-status {
+      font-size: 0.8rem;
+      min-height: 1em;
+    }
+
+    #uploads-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 4px;
+      font-size: 0.8rem;
+    }
+    .upload-row {
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      padding: 6px 8px;
+      background: #f9fafb;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    @media (max-width: 900px) {
+      #auth-wrapper {
+        grid-template-columns: 1fr;
+        margin-top: 32px;
+      }
+      .top-bar {
+        padding: 12px 16px;
+      }
+      .staff-shell {
+        flex-direction: column;
+      }
+      .dashboard-main-grid {
+        grid-template-columns: 1fr;
+      }
+      .condition-card {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .home-btn {
+      text-decoration: none;
+      background: #1f2937;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-right: 10px;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .home-btn:hover {
+      background: #111827;
+      transform: translateY(-2px);
+    }
+
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <div class="top-bar-title">
+      <a href="/" class="logo" style="text-decoration:none;color:#0b7bbf;">DA</a>
+      <span>Dental AI – Staff Portal</span>
+    </div>
+    <a href="/" class="home-btn">Home</a>
+    <button id="logout-btn">Logout</button>
+  </div>
+
+  <div class="page">
+    <!-- LOGIN + REGISTER AREA -->
+    <section id="auth-wrapper">
+      <div id="staff-login">
+        <h1>Staff Login</h1>
+        <p class="subtitle">Secure access for dentists and clinical staff.</p>
+
+        <form id="staff-login-form">
+          <label>
+            Work username
+            <input type="text" id="username" required />
+          </label>
+
+          <label>
+            Password
+            <input type="password" id="password" required />
+          </label>
+
+          <button type="submit">Sign in to Staff Portal</button>
+          <p id="error" class="error"></p>
+        </form>
+      </div>
+
+      <div id="staff-register">
+        <h2>Register New Staff Member</h2>
+        <p class="subtitle">
+          Office manager or admin can enroll a new doctor account here.
+        </p>
+
+        <form id="staff-create-form">
+          <label>
+            Login username
+            <input type="text" id="staff-create-username" required />
+          </label>
+
+          <label>
+            Temporary password
+            <input type="password" id="staff-create-password" required />
+          </label>
+
+          <label>
+            Staff full name
+            <input type="text" id="staff-create-fullname" required />
+          </label>
+
+          <label>
+            Work email
+            <input type="email" id="staff-create-email" />
+          </label>
+
+          <label>
+            Specialty
+            <input type="text" id="staff-create-specialty" placeholder="e.g. Oral Surgeon" />
+          </label>
+
+          <button type="submit">Create Staff Account</button>
+
+          <p id="staff-create-message" class="staff-create-message"></p>
+        </form>
+      </div>
+    </section>
+
+    <!-- DASHBOARD -->
+    <section id="staff-dashboard">
+      <div class="staff-shell">
+        <aside class="staff-nav">
+          <button class="nav-icon active" title="Patients">👥</button>
+          <button class="nav-icon" id="btn-add-condition-icon" title="Add Condition">➕</button>
+          <button class="nav-icon" id="btn-uploads-icon" title="Uploads">📁</button>
+          <button class="nav-icon" id="btn-notes-icon" title="Notes">📝</button>
+        </aside>
+
+        <main class="staff-main">
+          <div class="dashboard-main-grid">
+            <!-- PATIENT LIST -->
+            <section class="patients-panel">
+              <div class="patients-panel-header">
+                <h2>Patients</h2>
+                <span id="patient-count" class="patients-count">(0)</span>
+              </div>
+              <input id="patient-search" type="text" placeholder="Search by name…" />
+              <div id="patient-list"></div>
+            </section>
+
+            <!-- PATIENT DETAIL -->
+            <section class="patient-detail-wrapper">
+              <header class="member-header" id="patient-header">
+                <div class="member-primary">
+                  <h1 id="patient-name">Select a patient</h1>
+                  <div class="member-row" id="patient-meta">
+                    <span>No patient selected</span>
+                  </div>
+                  <div class="member-actions">
+                    <button class="icon-btn" type="button" id="btn-add-condition">
+                      ➕ Condition
+                    </button>
+                    <button class="icon-btn" type="button" id="btn-add-note">
+                      📝 Note
+                    </button>
+                  </div>
+                </div>
+                <div class="member-status">
+                  <div class="status-label">Program Status</div>
+                  <div class="status-value" id="patient-status">—</div>
+                </div>
+              </header>
+
+              <section class="program-strip" id="patient-program">
+                <div class="program-item">
+                  <span class="program-label">Primary Management Reason</span>
+                  <span class="program-value" id="program-reason">—</span>
+                </div>
+                <div class="program-item">
+                  <span class="program-label">Program Name</span>
+                  <span class="program-value" id="program-name">—</span>
+                </div>
+                <div class="program-item">
+                  <span class="program-label">Program Number</span>
+                  <span class="program-value" id="program-number">—</span>
+                </div>
+              </section>
+
+              <section class="conditions-panel">
+                <div class="panel-header">
+                  <h2>Conditions</h2>
+                </div>
+                <div class="conditions-toolbar">
+                  <input id="cond-filter-keyword" type="text" placeholder="Filter by keyword" />
+                  <input id="cond-filter-date" type="date" />
+                </div>
+                <div id="conditionsList" class="conditions-list"></div>
+              </section>
+
+              <section class="uploads-panel">
+                <div class="panel-header">
+                  <h2>X-Ray & Document Uploads</h2>
+                </div>
+
+                <form id="upload-form">
+                  <input type="file" id="upload-file" name="file" accept="image/*,.pdf" />
+                  <button type="submit" id="upload-submit">Upload</button>
+                </form>
+                <div id="upload-status"></div>
+                <div id="uploads-list"></div>
+              </section>
+            </section>
+          </div>
+        </main>
+      </div>
+    </section>
+  </div>
+
+  
+  <!-- Condition Modal -->
+  <div id="condition-modal" style="
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: none; align-items: center; justify-content: center;
+    z-index: 9999;">
+    <div style="background: white; padding: 20px; border-radius: 12px; width: 360px;">
+      <h3 style="margin-top:0;">Add Condition</h3>
+      <label>Name
+        <input id="cond-name" type="text" style="width:100%; margin-top:4px;" />
+      </label>
+      <label>Type
+        <input id="cond-type" type="text" style="width:100%; margin-top:4px;" />
+      </label>
+      <label>Onset Date
+        <input id="cond-onset" type="date" style="width:100%; margin-top:4px;" />
+      </label>
+      <label>Source
+        <input id="cond-source" type="text" style="width:100%; margin-top:4px;" />
+      </label>
+      <div style="margin-top:14px; display:flex; justify-content:flex-end; gap:10px;">
+        <button id="cond-cancel" class="icon-btn">Cancel</button>
+        <button id="cond-save" class="icon-btn" style="background:#0b7bbf; color:white;">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Note Modal -->
+  <div id="note-modal" style="
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: none; align-items: center; justify-content: center;
+    z-index: 9999;">
+    <div style="background: white; padding: 20px; border-radius: 12px; width: 360px;">
+      <h3 style="margin-top:0;">Patient Note</h3>
+      <label>Note
+        <textarea id="note-text" rows="4" style="width:100%; margin-top:4px;"></textarea>
+      </label>
+      <div style="margin-top:14px; display:flex; justify-content:flex-end; gap:10px;">
+        <button id="note-cancel" class="icon-btn">Cancel</button>
+        <button id="note-save" class="icon-btn" style="background:#0b7bbf; color:white;">Save</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+    (function () {
+      const authWrapper  = document.getElementById("auth-wrapper");
+      const dashSection  = document.getElementById("staff-dashboard");
+      const logoutBtn    = document.getElementById("logout-btn");
+      const errorEl      = document.getElementById("error");
+      const staffCreateForm = document.getElementById("staff-create-form");
+      const staffCreateMsg  = document.getElementById("staff-create-message");
+
+      let staffToken = null;
+      let patients = [];
+      let filteredPatients = [];
+      let selectedPatient = null;
+
+      /* ========= PATIENTS ========= */
+
+      async function loadPatients() {
+        const headers = { "Authorization": "Bearer " + staffToken };
+        const res = await fetch("/api/patients", { headers });   // GET /api/patients
+
+        if (res.status === 401 || res.status === 403) {
+          localStorage.removeItem("staff_token");
+          showLogin("Staff access only. Please log in again.");
+          return;
+        }
+
+        const data = await res.json();
+        patients = data || [];
+        filteredPatients = patients.slice();
+        renderPatientList();
+        if (patients.length) {
+          selectPatient(patients[0].id);
+        } else {
+          renderPatientDetail(null);
+        }
+      }
+
+      function renderPatientList() {
+        const listEl = document.getElementById("patient-list");
+        const countEl = document.getElementById("patient-count");
+        if (!listEl) return;
+
+        countEl.textContent = `(${filteredPatients.length})`;
+
+        if (!filteredPatients.length) {
+          listEl.innerHTML = '<div class="cond-empty">No patients found.</div>';
+          return;
+        }
+
+        listEl.innerHTML = filteredPatients.map(p => {
+          const created = p.created_at || "";
+          const badge = p.is_new ? "New" : "Existing";
+          return `
+            <div class="patient-row" data-id="${p.id}">
+              <div class="patient-row-main">
+                <strong>${p.name || "Unnamed patient"}</strong>
+                <span>${created ? "Created: " + created : ""}</span>
+              </div>
+              <span class="patient-badge">${badge}</span>
+            </div>`;
+        }).join("");
+
+        listEl.querySelectorAll(".patient-row").forEach(row => {
+          row.addEventListener("click", () => {
+            const id = row.getAttribute("data-id");
+            selectPatient(id);
+          });
+        });
+
+        highlightSelectedPatient();
+      }
+
+      function highlightSelectedPatient() {
+        const listEl = document.getElementById("patient-list");
+        if (!listEl) return;
+        listEl.querySelectorAll(".patient-row").forEach(row => {
+          row.classList.toggle(
+            "active",
+            selectedPatient && row.getAttribute("data-id") === String(selectedPatient.id)
+          );
+        });
+      }
+
+      function renderPatientDetail(patient) {
+        const nameEl = document.getElementById("patient-name");
+        const metaEl = document.getElementById("patient-meta");
+        const statusEl = document.getElementById("patient-status");
+        const reasonEl = document.getElementById("program-reason");
+        const progNameEl = document.getElementById("program-name");
+        const progNumEl = document.getElementById("program-number");
+
+        if (!patient) {
+          nameEl.textContent = "Select a patient";
+          metaEl.innerHTML = "<span>No patient selected</span>";
+          statusEl.textContent = "—";
+          reasonEl.textContent = "—";
+          progNameEl.textContent = "—";
+          progNumEl.textContent = "—";
+          renderConditions([]);
+          renderUploads([]);
+          return;
+        }
+
+        nameEl.textContent = patient.name || "Unnamed patient";
+
+        const metaParts = [];
+        if (patient.phone) metaParts.push(`<span class="member-phone">${patient.phone}</span>`);
+        if (patient.sex)   metaParts.push(`<span>${patient.sex}</span>`);
+        if (patient.dob)   metaParts.push(`<span>DOB ${patient.dob}</span>`);
+        if (patient.program) metaParts.push(`<span>${patient.program}</span>`);
+        if (patient.address) metaParts.push(`<span>${patient.address}</span>`);
+
+        metaEl.innerHTML = metaParts.length ? metaParts.join("") : "<span>No demographic data</span>";
+        statusEl.textContent = patient.program_status || "Unknown";
+
+        reasonEl.textContent = patient.primary_reason || "—";
+        progNameEl.textContent = patient.program_name || "—";
+        progNumEl.textContent = patient.program_number || "—";
+      }
+
+      /* ========= CONDITIONS (placeholder, uses patient.conditions if present) ========= */
+
+      function getConditionsForPatient(patient) {
+        if (!patient) return [];
+        return patient.conditions || [];
+      }
+
+      function renderConditions(list) {
+        const container = document.getElementById("conditionsList");
+        if (!container) return;
+
+        if (!list.length) {
+          container.innerHTML = '<p class="cond-empty">No conditions on file.</p>';
+          return;
+        }
+
+        container.innerHTML = list.map(c => {
+          const displayDate = c.date_entered
+            ? new Date(c.date_entered).toLocaleDateString()
+            : "—";
+          return `
+          <article class="condition-card">
+            <div class="cond-main">
+              <button class="cond-edit" type="button">✏️ Edit</button>
+              <div>
+                <div class="cond-name">${c.name}</div>
+                <div class="cond-type-pill">${c.type || "Physical"}</div>
+              </div>
+            </div>
+
+            <div>
+              <div class="field-label">Onset Date</div>
+              <div class="field-value">${c.onset_date || "Not provided"}</div>
+              <div class="field-label" style="margin-top:4px;">Time Since Diagnosis</div>
+              <div class="field-value">${c.time_since || "—"}</div>
+            </div>
+
+            <div>
+              <div class="field-label">Date Entered</div>
+              <div class="field-value">${displayDate}</div>
+              <div class="field-label" style="margin-top:4px;">Source</div>
+              <div class="field-value">${c.source || "—"}</div>
+              <div class="field-label" style="margin-top:4px;">Entered By</div>
+              <div class="field-value">${c.entered_by || "—"}</div>
+            </div>
+          </article>`;
+        }).join("");
+      }
+
+      function applyConditionFilters() {
+        if (!selectedPatient) {
+          renderConditions([]);
+          return;
+        }
+        const kwInput = document.getElementById("cond-filter-keyword");
+        const dateInput = document.getElementById("cond-filter-date");
+        const kw = kwInput ? kwInput.value.trim().toLowerCase() : "";
+        const date = dateInput ? dateInput.value : "";
+
+        const all = getConditionsForPatient(selectedPatient);
+        const filtered = all.filter(c => {
+          let okKw = true;
+          let okDate = true;
+
+          if (kw) {
+            const text = (c.name + (c.type || "") + (c.source || "") + (c.entered_by || "")).toLowerCase();
+            okKw = text.includes(kw);
+          }
+          if (date) {
+            okDate = c.date_entered === date;
+          }
+          return okKw && okDate;
+        });
+
+        renderConditions(filtered);
+      }
+
+      function hookConditionFilters() {
+        const kwInput = document.getElementById("cond-filter-keyword");
+        const dateInput = document.getElementById("cond-filter-date");
+        if (kwInput) kwInput.addEventListener("input", applyConditionFilters);
+        if (dateInput) dateInput.addEventListener("change", applyConditionFilters);
+      }
+
+      /* ========= UPLOADS =========
+         These assume you will create backend endpoints:
+         GET  /api/patients/{patient_id}/uploads
+         POST /api/patients/{patient_id}/uploads
+      ================================== */
+
+      async function loadUploads(patientId) {
+        const headers = { "Authorization": "Bearer " + staffToken };
+        const res = await fetch(`/api/patients/${encodeURIComponent(patientId)}/scans`, {
+          headers
+        });
+
+        if (!res.ok) {
+          renderUploads([]);
+          return;
+        }
+        const data = await res.json();
+        renderUploads(data || []);
+      }
+
+      // loadConditions: fetch conditions for a patient and update UI
+      async function loadConditions(patientId) {
+        const headers = { "Authorization": "Bearer " + staffToken };
+        try {
+          const res = await fetch(`/api/patients/${encodeURIComponent(patientId)}/conditions`, {
+            headers
+          });
+
+          if (!res.ok) {
+            renderConditions([]);
+            return;
+          }
+
+          const data = await res.json();
+          // update patient record in local list if present
+          const p = patients.find(p => String(p.id) === String(patientId));
+          if (p) p.conditions = data;
+
+          // ensure selectedPatient is updated and UI reflects the conditions
+          if (selectedPatient && String(selectedPatient.id) === String(patientId)) {
+            selectedPatient.conditions = data;
+            applyConditionFilters();
+          } else {
+            renderConditions(data || []);
+          }
+        } catch (err) {
+          console.error(err);
+          renderConditions([]);
+        }
+      }
+
+      function escapeHtml(str) {
+        if (!str) return "";
+        return str
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      function renderUploads(list) {
+        const container = document.getElementById("uploads-list");
+        if (!container) return;
+
+        if (!list.length) {
+          container.innerHTML = '<div class="uploads-empty">No uploads for this patient.</div>';
+          return;
+        }
+
+        container.innerHTML = list.map(s => {
+          const created = s.created_at
+            ? new Date(s.created_at).toLocaleString()
+            : "";
+          const confPct = s.confidence
+            ? Math.round(parseFloat(s.confidence) * 100)
+            : null;
+
+          const diagnosisText = s.prediction
+            ? `Diagnosis: ${s.prediction}` + (confPct != null ? ` (${confPct}%)` : "")
+            : "Diagnosis not available";
+
+          const noteText = s.note
+            ? `Note: ${escapeHtml(s.note)}`
+            : '<span style="font-style:italic;color:#6b7280;">No note for this scan.</span>';
+
+          return `
+            <div class="upload-row" data-id="${s.id}">
+              <div>
+                <div><strong>${created}</strong></div>
+                <div>${diagnosisText}</div>
+                <div>${noteText}</div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;">
+                <a href="${s.overlay_url}" target="_blank">View overlay</a>
+                <button class="cond-edit upload-note-btn" type="button">
+                  Add / edit note
+                </button>
+              </div>
+            </div>
+          `;
+        }).join("");
+
+        // attach event listeners for edit-note buttons
+        container.querySelectorAll(".upload-note-btn").forEach(btn => {
+          btn.addEventListener("click", async () => {
+            const row = btn.closest(".upload-row");
+            const scanId = row.getAttribute("data-id");
+            const existingNoteEl = row.querySelector("div div:nth-child(3)");
+            const currentText = existingNoteEl
+              ? existingNoteEl.textContent.replace(/^Note:\s*/, "")
+              : "";
+
+            const newNote = prompt("Enter note for this scan:", currentText);
+            if (newNote === null) return;
+
+            try {
+              const res = await fetch(`/api/scans/${encodeURIComponent(scanId)}/note`, {
+                method: "PATCH",
+                headers: {
+                  "Content-Type": "application/json",
+                  "Authorization": "Bearer " + staffToken
+                },
+                body: JSON.stringify({ note: newNote })
+              });
+
+              if (res.ok) {
+                await loadUploads(selectedPatient.id);
+              } else {
+                alert("Failed to save note.");
+              }
+            } catch (err) {
+              console.error(err);
+              alert("Network error while saving note.");
+            }
+          });
+        });
+      }
+
+
+      function hookUploadForm() {
+        const form = document.getElementById("upload-form");
+        const fileInput = document.getElementById("upload-file");
+        const statusEl = document.getElementById("upload-status");
+
+        if (!form) return;
+
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          if (!selectedPatient) {
+            statusEl.style.color = "#b91c1c";
+            statusEl.textContent = "Select a patient first.";
+            return;
+          }
+          if (!fileInput.files.length) {
+            statusEl.style.color = "#b91c1c";
+            statusEl.textContent = "Please choose a file to upload.";
+            return;
+          }
+
+          const headers = { "Authorization": "Bearer " + staffToken };
+          const formData = new FormData();
+          formData.append("file", fileInput.files[0]);
+
+          statusEl.style.color = "#111827";
+          statusEl.textContent = "Uploading and analyzing…";
+
+          try {
+            const res = await fetch(
+              `/api/patients/${encodeURIComponent(selectedPatient.id)}/scans`,
+              {
+                method: "POST",
+                headers,
+                body: formData
+              }
+            );
+
+            if (res.ok) {
+              statusEl.style.color = "#15803d";
+              statusEl.textContent = "Scan uploaded and analyzed.";
+              fileInput.value = "";
+              await loadUploads(selectedPatient.id);
+            } else {
+              const data = await res.json().catch(() => ({}));
+              statusEl.style.color = "#b91c1c";
+              statusEl.textContent = data.detail || "Upload failed.";
+            }
+          } catch (err) {
+            console.error(err);
+            statusEl.style.color = "#b91c1c";
+            statusEl.textContent = "Network error. Please try again.";
+          }
+        });
+      }
+
+      /* ========= PATIENT SELECTION ========= */
+
+      async function selectPatient(id) {
+        selectedPatient = patients.find(p => String(p.id) === String(id)) || null;
+        renderPatientDetail(selectedPatient);
+        highlightSelectedPatient();
+        applyConditionFilters();
+
+        if (selectedPatient) {
+          await loadUploads(selectedPatient.id);
+          await loadConditions(selectedPatient.id);   // <-- we will add this
+        } else {
+          renderUploads([]);
+          renderConditions([]);
+        }
+      }
+
+      /* ========= DASHBOARD VIEW ========= */
+
+      function showLogin(message) {
+        if (message) errorEl.textContent = message;
+        authWrapper.style.display = "grid";
+        dashSection.style.display = "none";
+        logoutBtn.style.display   = "none";
+      }
+
+      function showDashboard() {
+        errorEl.textContent = "";
+        authWrapper.style.display = "none";
+        dashSection.style.display = "block";
+        logoutBtn.style.display   = "inline-flex";
+        loadDashboard();
+      }
+
+      async function loadDashboard() {
+        staffToken = localStorage.getItem("staff_token");
+        if (!staffToken) {
+          showLogin();
+          return;
+        }
+        await loadPatients();
+        hookConditionFilters();
+        hookUploadForm();
+      }
+
+      /* ========= LOGIN (/auth/token) ========= */
+
+      const loginForm = document.getElementById("staff-login-form");
+      if (loginForm) {
+        loginForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          errorEl.textContent = "";
+          const username = document.getElementById("username").value;
+          const password = document.getElementById("password").value;
+
+          const body = new URLSearchParams();
+          body.append("username", username);
+          body.append("password", password);
+          body.append("grant_type", "password");
+
+          try {
+            const res = await fetch("/auth/token", {
+              method: "POST",
+              headers: { "Content-Type": "application/x-www-form-urlencoded" },
+              body
+            });
+
+            if (res.ok) {
+              const data = await res.json();
+              localStorage.setItem("staff_token", data.access_token);
+              showDashboard();
+            } else {
+              const data = await res.json();
+              errorEl.textContent = data.detail || "Login failed";
+            }
+          } catch (err) {
+            console.error(err);
+            errorEl.textContent = "Network error. Please try again.";
+          }
+        });
+      }
+
+      if (logoutBtn) {
+        logoutBtn.onclick = () => {
+          localStorage.removeItem("staff_token");
+          showLogin();
+        };
+      }
+
+      
+
+// ========= STAFF CREATE (public /auth/register) =========
+if (staffCreateForm) {
+  staffCreateForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    staffCreateMsg.textContent = "";
+    staffCreateMsg.style.color = "#111827";
+
+    const username  = document.getElementById("staff-create-username").value;
+    const password  = document.getElementById("staff-create-password").value;
+    const fullName  = document.getElementById("staff-create-fullname").value;
+    const email     = document.getElementById("staff-create-email").value;
+    const specialty = document.getElementById("staff-create-specialty").value;
+
+    try {
+      const res = await fetch("/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: username,
+          password: password,
+          role: "doctor",
+          name: fullName || username,
+          dob: null,
+          sex: null,
+          note: `Staff created via portal – Email: ${email || "N/A"}, Specialty: ${specialty || "N/A"}`
+        }),
+      });
+
+      if (res.ok) {
+        staffCreateMsg.style.color = "#15803d";
+        staffCreateMsg.textContent =
+          `Staff account "${username}" created. They can now log in on this page.`;
+        staffCreateForm.reset();
+      } else {
+        const data = await res.json().catch(() => ({}));
+        staffCreateMsg.style.color = "#b91c1c";
+        staffCreateMsg.textContent = data.detail || "Error creating staff.";
+      }
+    } catch (err) {
+      console.error(err);
+      staffCreateMsg.style.color = "#b91c1c";
+      staffCreateMsg.textContent = "Network error. Please try again.";
+    }
+  });
+}
+/* ========= ADD CONDITION BUTTON ========= */
+
+const condModal = document.getElementById("condition-modal");
+const condSave  = document.getElementById("cond-save");
+const condCancel = document.getElementById("cond-cancel");
+
+function openConditionModal() {
+  if (!selectedPatient) {
+    alert("Select a patient first");
+    return;
+  }
+  condModal.style.display = "flex";
+}
+
+function closeConditionModal() {
+  condModal.style.display = "none";
+}
+
+// open modal
+document.getElementById("btn-add-condition").addEventListener("click", openConditionModal);
+
+// save condition
+condSave.addEventListener("click", async () => {
+  const name   = document.getElementById("cond-name").value;
+  const type   = document.getElementById("cond-type").value;
+  const onset  = document.getElementById("cond-onset").value;
+  const source = document.getElementById("cond-source").value;
+
+  if (!name.trim()) {
+    alert("Condition name is required");
+    return;
+  }
+
+  try {
+    const res = await fetch(`/api/patients/${selectedPatient.id}/conditions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + staffToken
+      },
+      body: JSON.stringify({
+        name,
+        type,
+        onset_date: onset,
+        source
+      })
+    });
+
+    if (res.ok) {
+      await loadConditions(selectedPatient.id);
+      closeConditionModal();
+    } else {
+      const data = await res.json().catch(() => ({}));
+      alert(data.detail || "Error saving condition");
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Network error");
+  }
+});
+
+// cancel button
+condCancel.addEventListener("click", closeConditionModal);
+/* ========= CONDITION + NOTE BUTTONS ========= */
+
+function guardPatientSelected() {
+  if (!selectedPatient) {
+    alert("Select a patient first.");
+    return false;
+  }
+  return true;
+}
+
+// ---- Condition buttons (header + sidebar)
+const btnAddCondition = document.getElementById("btn-add-condition");
+const btnAddConditionIcon = document.getElementById("btn-add-condition-icon");
+
+if (btnAddCondition) {
+  btnAddCondition.addEventListener("click", () => {
+    if (!guardPatientSelected()) return;
+    openConditionModal();
+  });
+}
+
+if (btnAddConditionIcon) {
+  btnAddConditionIcon.addEventListener("click", () => {
+    if (!guardPatientSelected()) return;
+    openConditionModal();
+  });
+}
+
+// ---- Note buttons (header + sidebar)
+const btnAddNote = document.getElementById("btn-add-note");
+const btnNoteIcon = document.getElementById("btn-notes-icon");
+
+if (btnAddNote) {
+  btnAddNote.addEventListener("click", () => {
+    if (!guardPatientSelected()) return;
+    openNoteModal();
+  });
+}
+
+if (btnNoteIcon) {
+  btnNoteIcon.addEventListener("click", () => {
+    if (!guardPatientSelected()) return;
+    openNoteModal();
+  });
+}
+
+
+
+      /* ========= NOTE MODAL LOGIC ========= */
+      const noteModal = document.getElementById("note-modal");
+      const noteSave  = document.getElementById("note-save");
+      const noteCancel = document.getElementById("note-cancel");
+
+      function openNoteModal() {
+        if (!guardPatientSelected()) return;
+        if (noteModal) {
+          const noteField = document.getElementById("note-text");
+          if (noteField && selectedPatient && selectedPatient.note) {
+            noteField.value = selectedPatient.note;
+          }
+          noteModal.style.display = "flex";
+        }
+      }
+
+      function closeNoteModal() {
+        if (noteModal) {
+          noteModal.style.display = "none";
+        }
+      }
+
+      if (noteCancel) {
+        noteCancel.addEventListener("click", closeNoteModal);
+      }
+
+      if (noteSave) {
+        noteSave.addEventListener("click", async () => {
+          if (!guardPatientSelected()) return;
+          const noteField = document.getElementById("note-text");
+          const noteVal = noteField ? noteField.value : "";
+          try {
+            const res = await fetch(`/api/patients/${encodeURIComponent(selectedPatient.id)}/note`, {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + staffToken
+              },
+              body: JSON.stringify({ note: noteVal })
+            });
+            if (res.ok) {
+              const updated = await res.json();
+              if (selectedPatient) {
+                selectedPatient.note = updated.note;
+              }
+              closeNoteModal();
+            } else {
+              alert("Failed to save note.");
+            }
+          } catch (err) {
+            console.error(err);
+            alert("Network error while saving note.");
+          }
+        });
+      }
+
+
+})();
+</script>
+</body>
+</html>

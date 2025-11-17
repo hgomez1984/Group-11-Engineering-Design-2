@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Patient Chart</title>
+  <link rel="stylesheet" href="/ED2_scc.css"/>
+  <style>
+    .welcome-wrap{max-width:1400px;margin:24px auto;padding:0 24px}
+    .top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+    .greet{margin:0;font-size:26px}
+  </style>
+</head>
+<body>
+  <div class="welcome-wrap">
+    <div class="top-row">
+      <h1 class="greet">Welcome, <span id="who">User</span></h1>
+      <button id="logoutBtn" class="btn ghost" type="button">Logout</button>
+    </div>
+
+    <!-- BIG RESULTS AREA -->
+    <section class="card pad">
+      <h2 class="card-title">Analysis Results</h2>
+      <div id="results" class="results-grid twocol"></div>
+    </section>
+
+    <!-- UPLOAD AREA -->
+    <section class="card pad" id="upload-card">
+      <h2 class="card-title">Uploads</h2>
+      <p class="muted small">PNG/JPG/WebP/HEIC/TIFF/DICOM up to 10 MB. Drag & drop, click, or paste from clipboard.</p>
+
+      <input id="file-input" type="file"
+             accept=".png,.jpg,.jpeg,.webp,.heic,.heif,.tif,.tiff,.dcm,image/*"
+             multiple hidden />
+
+      <div class="dropzone" id="dropzone" aria-label="Upload images">
+        <div style="text-align:center; pointer-events:none">
+          <div style="font-size:40px" aria-hidden>⬆️</div>
+          <div><strong>Drop images here</strong> or click to browse</div>
+          <div class="muted small">Files stay in your browser until “Analyze”.</div>
+        </div>
+      </div>
+
+      <div class="actions" style="margin-top:10px">
+        <button id="analyzeBtn" class="btn" type="button">Analyze</button>
+        <button id="clearBtn"   class="btn ghost" type="button">Clear All</button>
+      </div>
+
+      <div id="status" class="status"></div>
+      <div id="gallery" class="result-grid"></div>
+    </section>
+
+    <div class="card pad" id="chart">
+      <h2 class="card-title">Patient Chart</h2>
+      <p class="muted">This is your chart overview.</p>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const token = sessionStorage.getItem('token');
+      if (!token) { window.location.replace('/'); return; }
+      const name = sessionStorage.getItem('username') || 'User';
+      const whoEl = document.getElementById('who');
+      if (whoEl) whoEl.textContent = name;
+      document.getElementById('logoutBtn')?.addEventListener('click', () => {
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('username');
+        window.location.replace('/');
+      });
+    })();
+  </script>
+  <script src="/JS_ED2.js" defer></script>
+</body>
+</html>

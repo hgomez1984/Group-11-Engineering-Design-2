@@ -1,0 +1,26 @@
+# Virtual environments
+venv/
+venv310/
+.env/
+.venv/
+env/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Large ML binaries
+*.pyd
+*.dll
+*.so
+*.dylib
+
+# IDE folders
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+

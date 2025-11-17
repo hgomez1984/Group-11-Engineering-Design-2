@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <style>
+  .staff-btn {
+    background: #0b7bbf;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+
+  .staff-btn:hover {
+    background: #0969a5;
+    transform: translateY(-2px);
+  }
+  </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI-Assisted Dental Diagnosis</title>
+
+  <!-- Shared CSS -->
+  <link rel="stylesheet" href="/ED2_scc.css" />
+
+  <!-- Your working app script -->
+  <script src="/JS_ED2.js?v=6" defer></script>
+
+  <!-- Charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
+</head>
+<body data-page="landing">
+  <!-- Top bar -->
+  <header class="topbar">
+    <div class="container bar-inner">
+      <div class="brand">
+        <span class="logo">🦷</span>
+        <span class="brand-title">AI-Assisted Dental Diagnosis</span>
+      </div>
+      <a href="/staff" class="staff-btn">Staff Login</a>
+    </div>
+  </header>
+
+  <main class="container main">
+    <!-- LOGIN CARD -->
+    <form id="form-login" class="form grid-2" autocomplete="off">
+      <!-- Honeypots -->
+      <input type="text" style="position:absolute;left:-9999px;opacity:0;height:0;width:0" aria-hidden="true" tabindex="-1" autocomplete="username">
+      <input type="password" style="position:absolute;left:-9999px;opacity:0;height:0;width:0" aria-hidden="true" tabindex="-1" autocomplete="new-password">
+
+      <div class="field">
+        <label class="label">Username</label>
+        <input id="login-username" type="text" placeholder="your username" autocomplete="off" />
+      </div>
+
+      <div class="field">
+        <label class="label">Password</label>
+        <input id="login-password" type="password" placeholder="••••••••" autocomplete="new-password" />
+      </div>
+
+      <div class="actions">
+        <button id="loginBtn" class="btn" type="submit">Login</button>
+        <button class="btn js-register" type="button">Register</button>
+      </div>
+
+      <div id="loginStatus" class="status warn">Please log in to analyze.</div>
+    </form>
+
+    <!-- FEATURES -->
+    <section id="features" class="card pad" aria-label="Capabilities" style="margin-top:16px">
+      <h3 class="h2" style="margin:0 0 8px">Capabilities</h3>
+      <div class="grid-2">
+        <div class="card pad">
+          <span class="small muted">Detection</span>
+          <div><strong>Multi-label pathology flags</strong></div>
+          <div class="small muted">Caries, periodontal bone loss, impacted teeth, restorations.</div>
+        </div>
+        <div class="card pad">
+          <span class="small muted">Explainability</span>
+          <div><strong>Grad-CAM style overlays</strong></div>
+          <div class="small muted">Heatmaps to support clinical interpretation.</div>
+        </div>
+      </div>
+      <div class="grid-2" style="margin-top:8px">
+        <div class="card pad">
+          <span class="small muted">Audit</span>
+          <div><strong>Versioned runs</strong></div>
+          <div class="small muted">Store model version, thresholds, and reviewer notes.</div>
+        </div>
+        <div class="card pad">
+          <span class="small muted">Security</span>
+          <div><strong>HIPAA-minded design</strong></div>
+          <div class="small muted">JWT sessions; uploads encrypted in transit.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WORKFLOW -->
+    <section id="workflow" class="card pad" aria-label="Workflow" style="margin-top:16px">
+      <h3 class="h2" style="margin:0 0 8px">Workflow</h3>
+      <div class="grid-2">
+        <div class="card pad">
+          <strong>1) Create secure session</strong>
+          <div class="small muted">JWT stored in sessionStorage; expires on logout/timeout.</div>
+        </div>
+        <div class="card pad">
+          <strong>2) Upload panoramic X-ray</strong>
+          <div class="small muted">DICOM/PNG/JPG accepted. Metadata captured for audit trail.</div>
+        </div>
+      </div>
+      <div class="grid-2" style="margin-top:8px">
+        <div class="card pad">
+          <strong>3) Run inference</strong>
+          <div class="small muted">FastAPI endpoint triggers model and stores results.</div>
+        </div>
+        <div class="card pad">
+          <strong>4) Review & export</strong>
+          <div class="small muted">Overlay heatmaps, add notes, save PDF summary.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- REGISTER MODAL -->
+    <div id="registerModal" class="modal hidden" aria-hidden="true" role="dialog" aria-modal="true">
+      <div class="modal-dialog card pad" role="document" aria-labelledby="regTitle">
+        <h3 id="regTitle" class="h2">Register</h3>
+
+        <div class="panel">
+          <div class="row">
+            <label>
+              <span class="small muted">Username *</span>
+              <input type="text" id="reg_username" placeholder="jdoe">
+            </label>
+            <label>
+              <span class="small muted">Password *</span>
+              <input type="password" id="reg_password" placeholder="••••••••">
+            </label>
+          </div>
+          <label>
+            <span class="small muted">Full name *</span>
+            <input type="text" id="reg_name" placeholder="Jane Doe">
+          </label>
+          <div class="row">
+            <label>
+              <span class="small muted">Date of birth</span>
+              <input type="text" id="reg_dob" placeholder="YYYY-MM-DD">
+            </label>
+            <label>
+              <span class="small muted">Sex</span>
+              <input type="text" id="reg_sex" placeholder="F / M / X">
+            </label>
+          </div>
+          <label>
+            <span class="small muted">Note (optional)</span>
+            <input type="text" id="reg_note" placeholder="Reason for visit, notes…">
+          </label>
+        </div>
+
+        <div class="actions" style="margin-top:8px">
+          <button class="btn primary" id="registerSaveBtn" type="button">Create Account</button>
+          <button class="btn ghost" id="registerCancelBtn" type="button">Cancel</button>
+        </div>
+        <div id="registerStatus" class="status muted" role="status"></div>
+      </div>
+      <div class="modal-backdrop"></div>
+    </div>
+  </main>
+</body>
+</html>
