@@ -21,7 +21,66 @@ body{
   background:rgba(10,15,20,.75);
   backdrop-filter: blur(8px);
 }
-.container{max-width:1200px;margin:0 auto;padding:16px 22px} /* widened from 1100 */
+
+/* --- New nav layout (buttons + brand) --- */
+.nav-shell{
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 12px 22px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Top row: pill buttons */
+.nav-top-buttons{
+  display: flex;
+  gap: 12px;
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.nav-btn{
+  background: transparent;
+  border: 1px solid #31445d;
+  color: #a7bed6;
+  padding: 4px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s ease,
+    color 0.15s ease;
+}
+
+.nav-btn:hover{
+  background: #1a2230;
+  border-color: #3a93ff;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+/* Second row: logo + text */
+.nav-brand-row{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-logo-icon{
+  font-size: 20px;
+}
+
+.nav-logo-text{
+  font-size: 16px;
+  font-weight: 700;
+  color: #e9f1fb;
+}
+
+.container{max-width:1300px;margin:0 auto;padding:16px 22px} /* widened from 1100 */
 .bar-inner{display:flex;align-items:center;justify-content:space-between}
 .brand{display:flex;align-items:center;gap:10px}
 .logo{font-size:20px}
@@ -75,51 +134,7 @@ input:focus, select:focus, textarea:focus{border-color:var(--focus)}
 .btn.ghost{background:transparent;color:#d8e7fb;border-color:var(--border)}
 .btn.ghost:hover{border-color:#33527a}
 
-.navbar {
-  background: #050816;              /* same dark header as the rest of the site */
-  padding: 8px 24px 14px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
 
-.nav-container {
-  max-width: 1100px;
-  margin: 0 auto;
-}
-
-/* Top tiny links row (Home, Patient, Staff, Feedback) */
-.nav-top-links {
-  display: flex;
-  gap: 16px;
-  font-size: 0.85rem;
-  margin-bottom: 6px;
-}
-
-.nav-top-links a {
-  color: #8f9ad7;
-  text-decoration: none;
-}
-
-.nav-top-links a:hover {
-  color: #ffffff;
-  text-decoration: underline;
-}
-
-/* Brand row under the links */
-.nav-brand-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.nav-logo-icon {
-  font-size: 1.3rem;
-}
-
-.nav-logo-text {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #ffffff;
-}
 
 
 /* Dropzone */
@@ -284,7 +299,5 @@ textarea:-moz-autofill {
 
 
 
-/* widen the page so big images have room */
-.container{max-width:1300px}
 
 
