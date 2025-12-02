@@ -75,6 +75,53 @@ input:focus, select:focus, textarea:focus{border-color:var(--focus)}
 .btn.ghost{background:transparent;color:#d8e7fb;border-color:var(--border)}
 .btn.ghost:hover{border-color:#33527a}
 
+.navbar {
+  background: #050816;              /* same dark header as the rest of the site */
+  padding: 8px 24px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.nav-container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* Top tiny links row (Home, Patient, Staff, Feedback) */
+.nav-top-links {
+  display: flex;
+  gap: 16px;
+  font-size: 0.85rem;
+  margin-bottom: 6px;
+}
+
+.nav-top-links a {
+  color: #8f9ad7;
+  text-decoration: none;
+}
+
+.nav-top-links a:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+/* Brand row under the links */
+.nav-brand-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-logo-icon {
+  font-size: 1.3rem;
+}
+
+.nav-logo-text {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+
 /* Dropzone */
 .dropzone{
   position:relative; border:2px dashed #31445d; border-radius:14px;
@@ -234,6 +281,8 @@ textarea:-moz-autofill {
   display:block;width:100%;max-width:1400px;height:auto;
   border-radius:10px;border:1px solid var(--border)
 }
+
+
 
 /* widen the page so big images have room */
 .container{max-width:1300px}
